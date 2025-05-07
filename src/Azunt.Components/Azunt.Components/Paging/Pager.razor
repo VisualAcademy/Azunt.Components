@@ -1,0 +1,63 @@
+﻿@using Azunt.Components.Paging
+@namespace Azunt.Components.Paging
+
+<div class="d-flex">
+    <ul class="pagination pagination-sm mx-auto">
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(1))">FIRST</a></li>
+            <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(Model.PageNumber - 1))">PREV</a></li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">FIRST</span></li>
+            <li class="page-item disabled"><span class="page-link">PREV</span></li>
+        }
+
+        @{
+            int start = (Model.PageIndex / Model.PagerButtonCount) * Model.PagerButtonCount + 1;
+            int end = Math.Min(start + Model.PagerButtonCount - 1, Model.PageCount);
+        }
+
+        @for (int i = start; i <= end; i++)
+        {
+            if (i == Model.PageNumber)
+            {
+                <li class="page-item active"><span class="page-link">@i</span></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(i))">@i</a></li>
+            }
+        }
+
+        @if (Model.PageNumber < Model.PageCount)
+        {
+            <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(Model.PageNumber + 1))">NEXT</a></li>
+            <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(Model.PageCount))">LAST</a></li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">NEXT</span></li>
+            <li class="page-item disabled"><span class="page-link">LAST</span></li>
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public PagerBase Model { get; set; } = default!;
+    [Parameter] public EventCallback<int> PageIndexChanged { get; set; }
+
+    protected override Task OnParametersSetAsync()
+    {
+        Model.PageCount = (Model.RecordCount == 0) ? 1 : Convert.ToInt32(Math.Ceiling(Model.RecordCount / (double)Model.PageSize));
+        return base.OnParametersSetAsync();
+    }
+
+    private void PagerClicked(int pageNumber)
+    {
+        Model.PageNumber = pageNumber;
+        Model.PageIndex = pageNumber - 1;
+        PageIndexChanged.InvokeAsync(Model.PageIndex);
+    }
+}

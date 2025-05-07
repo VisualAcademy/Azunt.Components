@@ -1,0 +1,15 @@
+﻿@namespace Azunt.Components.Search
+
+<div class="input-group mb-3">
+    <input class="form-control form-control-sm"
+           type="search"
+           placeholder="Search..."
+           aria-describedby="btnSearch"
+           @attributes="AdditionalAttributes"
+           @bind="SearchQuery"
+           @bind:event="oninput" />
+
+    <div class="input-group-append">
+        <button class="btn btn-sm btn-success" type="submit" @onclick="Search" id="btnSearch">Search</button>
+    </div>
+</div>
