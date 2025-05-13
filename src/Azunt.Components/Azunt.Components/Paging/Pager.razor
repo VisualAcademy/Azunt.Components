@@ -3,17 +3,39 @@
 
 <div class="d-flex">
     <ul class="pagination pagination-sm mx-auto">
-        @if (Model.PageNumber > 1)
+
+        @* FIRST button *@
+        @if (Model.PageNumber == 1)
+        {
+            <li class="page-item disabled"><span class="page-link">FIRST</span></li>
+        }
+        else
         {
             <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(1))">FIRST</a></li>
+        }
+
+        @* Previous N button *@
+        @if (Model.PageNumber > Model.PagerButtonCount)
+        {
+            int prev = (Model.PageNumber - 1) / Model.PagerButtonCount * Model.PagerButtonCount;
+            <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(prev))">-@Model.PagerButtonCount</a></li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">-@Model.PagerButtonCount</span></li>
+        }
+
+        @* PREV button *@
+        @if (Model.PageNumber > 1)
+        {
             <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(Model.PageNumber - 1))">PREV</a></li>
         }
         else
         {
-            <li class="page-item disabled"><span class="page-link">FIRST</span></li>
             <li class="page-item disabled"><span class="page-link">PREV</span></li>
         }
 
+        @* Page number buttons *@
         @{
             int start = (Model.PageIndex / Model.PagerButtonCount) * Model.PagerButtonCount + 1;
             int end = Math.Min(start + Model.PagerButtonCount - 1, Model.PageCount);
@@ -21,6 +43,11 @@
 
         @for (int i = start; i <= end; i++)
         {
+            if (i > Model.PageCount)
+            {
+                break;
+            }
+
             if (i == Model.PageNumber)
             {
                 <li class="page-item active"><span class="page-link">@i</span></li>
@@ -31,26 +58,52 @@
             }
         }
 
+        @* NEXT button *@
         @if (Model.PageNumber < Model.PageCount)
         {
             <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(Model.PageNumber + 1))">NEXT</a></li>
-            <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(Model.PageCount))">LAST</a></li>
         }
         else
         {
             <li class="page-item disabled"><span class="page-link">NEXT</span></li>
+        }
+
+        @* Next N button *@
+        @if ((start + Model.PagerButtonCount) <= Model.PageCount)
+        {
+            int next = start + Model.PagerButtonCount;
+            <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(next))">+@Model.PagerButtonCount</a></li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">+@Model.PagerButtonCount</span></li>
+        }
+
+        @* LAST button *@
+        @if (Model.PageNumber != Model.PageCount)
+        {
+            <li class="page-item"><a class="page-link" @onclick="@(() => PagerClicked(Model.PageCount))">LAST</a></li>
+        }
+        else
+        {
             <li class="page-item disabled"><span class="page-link">LAST</span></li>
         }
+
     </ul>
 </div>
 
 @code {
-    [Parameter, EditorRequired] public PagerBase Model { get; set; } = default!;
-    [Parameter] public EventCallback<int> PageIndexChanged { get; set; }
+    [Parameter, EditorRequired]
+    public PagerBase Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<int> PageIndexChanged { get; set; }
 
     protected override Task OnParametersSetAsync()
     {
-        Model.PageCount = (Model.RecordCount == 0) ? 1 : Convert.ToInt32(Math.Ceiling(Model.RecordCount / (double)Model.PageSize));
+        Model.PageCount = (Model.RecordCount == 0)
+            ? 1
+            : Convert.ToInt32(Math.Ceiling(Model.RecordCount / (double)Model.PageSize));
         return base.OnParametersSetAsync();
     }
 
