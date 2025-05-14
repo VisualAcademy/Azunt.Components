@@ -14,11 +14,11 @@
         {
             arrow = "↕";
         }
-        else if (SortOrder.Contains(SortColumn) && SortOrder.Contains("Desc"))
+        else if (SortOrder == SortColumn + "Desc")
         {
             arrow = "↓";
         }
-        else if (SortOrder.Contains(SortColumn))
+        else if (SortOrder == SortColumn)
         {
             arrow = "↑";
         }
