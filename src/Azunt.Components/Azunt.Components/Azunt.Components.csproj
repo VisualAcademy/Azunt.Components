@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
 
         <!-- NuGet 버전 -->
-        <VersionPrefix>1.0.2</VersionPrefix>
+        <VersionPrefix>1.0.3</VersionPrefix>
 
         <!-- NuGet 메타데이터 -->
         <Title>Azunt.Components</Title>
