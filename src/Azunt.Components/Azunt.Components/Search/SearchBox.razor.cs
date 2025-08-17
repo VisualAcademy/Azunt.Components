@@ -7,19 +7,19 @@ public partial class SearchBox : ComponentBase, IDisposable
 {
     #region Fields
     private string searchQuery = "";
-    private System.Timers.Timer? debounceTimer; 
+    private System.Timers.Timer? debounceTimer;
     #endregion
 
     #region Parameters
     [Parameter(CaptureUnmatchedValues = true)]
     public IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
 
-    // 자식 컴포넌트에서 발생한 정보를 부모 컴포넌트에게 전달
+    // Pass information from the child component to the parent component
     [Parameter]
     public EventCallback<string> SearchQueryChanged { get; set; }
 
     [Parameter]
-    public int Debounce { get; set; } = 300; 
+    public int Debounce { get; set; } = 300;
     #endregion
 
     #region Properties
@@ -29,22 +29,27 @@ public partial class SearchBox : ComponentBase, IDisposable
         set
         {
             searchQuery = value;
-            debounceTimer?.Stop(); // 텍스트박스에 값을 입력하는 동안 타이머 중지
-            debounceTimer?.Start(); // 타이머 실행(300밀리초 후에 딱 한 번 실행)
+            debounceTimer?.Stop(); // Stop timer while typing
+            debounceTimer?.Start(); // Restart timer (fires once after the debounce interval)
         }
-    } 
+    }
     #endregion
 
     #region Lifecycle Methods
     protected override void OnInitialized()
     {
-        debounceTimer = new System.Timers.Timer { Interval = Debounce, AutoReset = false };
+        debounceTimer = new System.Timers.Timer
+        {
+            Interval = Debounce,
+            AutoReset = false // Ensure it runs only once per trigger
+        };
         debounceTimer.Elapsed += SearchHandler!;
     }
     #endregion
 
     #region Event Handlers
-    protected void Search() => SearchQueryChanged.InvokeAsync(SearchQuery); // 부모의 메서드에 검색어 전달
+    protected void Search()
+        => SearchQueryChanged.InvokeAsync(SearchQuery); // Send search query to the parent component
 
     protected async void SearchHandler(object? source, ElapsedEventArgs e)
     {
@@ -53,6 +58,10 @@ public partial class SearchBox : ComponentBase, IDisposable
     #endregion
 
     #region Public Methods
-    public void Dispose() => debounceTimer?.Dispose(); 
+    public void Dispose()
+    {
+        debounceTimer?.Dispose();
+        GC.SuppressFinalize(this);
+    }
     #endregion
 }
