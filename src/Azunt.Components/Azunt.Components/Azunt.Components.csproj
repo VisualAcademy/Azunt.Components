@@ -5,10 +5,11 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
 
-        <!-- NuGet 버전 -->
-        <VersionPrefix>1.0.3</VersionPrefix>
+        <!-- NuGet version -->
+        <VersionPrefix>1.0.4</VersionPrefix>
+        <VersionSuffix></VersionSuffix>
 
-        <!-- NuGet 메타데이터 -->
+        <!-- NuGet metadata -->
         <Title>Azunt.Components</Title>
         <Description>Azunt.Components is a reusable Blazor UI component library for search, sorting, and pagination in Blazor Server and WebAssembly projects.</Description>
         <PackageTags>Azunt, Blazor, UI, Component, Pagination, Search, Sort, RCL, RazorClassLibrary</PackageTags>
@@ -16,28 +17,37 @@
         <Authors>VisualAcademy</Authors>
         <Company>Hawaso</Company>
 
-        <!-- GitHub 저장소 정보 -->
+        <!-- GitHub repository -->
         <PackageProjectUrl>https://github.com/VisualAcademy/Azunt.Components</PackageProjectUrl>
         <RepositoryUrl>https://github.com/VisualAcademy/Azunt.Components</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <!-- 저작권 -->
+        <!-- Copyright -->
         <Copyright>© 2025 Hawaso. All rights reserved.</Copyright>
-    </PropertyGroup>
 
+        <!-- README & License for NuGet -->
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    </PropertyGroup>
 
     <ItemGroup>
         <SupportedPlatform Include="browser" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azunt" Version="1.1.2" />
+        <PackageReference Include="Azunt" Version="1.1.5" />
         <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
         <Folder Include="wwwroot\" />
+    </ItemGroup>
+
+    <!-- Include solution-root README and LICENSE in the NuGet package -->
+    <ItemGroup>
+        <None Include="..\..\..\README.md" Pack="true" PackagePath="" />
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
 
 </Project>
